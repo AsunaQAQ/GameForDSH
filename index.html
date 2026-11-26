@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#05070d">
+<link rel="icon" type="image/png" href="assets/favicon.png">
+<title>夜巡 NIGHTFALL · 龙门 B-7</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="app">
+  <div id="stage">
+    <canvas id="game" width="480" height="270"></canvas>
+    <div class="vignette"></div>
+    <div class="scanlines"></div>
+
+    <div id="hud" class="hud hidden">
+      <div class="hud-top">
+        <div class="mission">
+          <div class="tag"><i></i> OPERATION // NIGHTFALL</div>
+          <div class="loc">龙门 · 第九区 <span>B-7</span> <em>23:41</em></div>
+          <div class="vitals">
+            <div id="hp" class="hp">
+              <i class="pip on"></i><i class="pip on"></i><i class="pip on"></i>
+            </div>
+            <div id="cores" class="cores">
+              <span class="diamond"></span><b id="coreCount">0</b><em>/ 3</em>
+            </div>
+          </div>
+        </div>
+        <div class="hud-right">
+          <div class="clock" id="timer">00:00</div>
+          <div class="weather">RAIN · 23:41</div>
+        </div>
+      </div>
+
+      <div id="toast" class="toast"></div>
+
+      <div id="comms" class="comms">
+        <div class="portrait"><img src="assets/portrait.png" alt="陈"></div>
+        <div class="comms-body">
+          <div class="comms-name">陈 <span>CH'EN</span> <em>// 龙门近卫局</em></div>
+          <p id="commsText"></p>
+        </div>
+      </div>
+
+      <div class="hints">
+        <span><kbd>A</kbd><kbd>D</kbd> 移动</span>
+        <span><kbd>SPACE</kbd> 跳跃 / 二段</span>
+        <span><kbd>SHIFT</kbd> 冲刺</span>
+        <span><kbd>J</kbd> 挥刀</span>
+        <span><kbd>ESC</kbd> 暂停</span>
+        <span><kbd>M</kbd> 静音</span>
+      </div>
+    </div>
+
+    <div id="title" class="overlay title">
+      <div class="title-bg"></div>
+      <div class="title-fog"></div>
+      <div class="title-inner">
+        <div class="kicker"><i></i> ARKNIGHTS · FAN PIXEL DEMO</div>
+        <h1><span class="cn">夜巡</span><span class="en">NIGHTFALL</span></h1>
+        <div class="rule"><span></span><b>龙门 · 第九区 · B-7 撤离行动</b></div>
+        <p class="brief">
+          雨夜，城市断电后的第七分钟。<br>
+          陈晖洁带着赤霄穿过封锁区，在抵达 B-7 撤离点之前，<br>
+          把散落在街区里的三枚数据核心带回来。
+        </p>
+        <div class="keys">
+          <span><kbd>A</kbd><kbd>D</kbd> 移动</span>
+          <span><kbd>SPACE</kbd> 跳跃 / 二段跳</span>
+          <span><kbd>SHIFT</kbd> 冲刺</span>
+          <span><kbd>J</kbd> 挥刀</span>
+        </div>
+        <div class="title-actions">
+          <button id="startBtn" class="btn" disabled><span>进入封锁区</span><em>ENTER</em></button>
+          <div id="loadNote" class="load-note">正在载入像素档案…</div>
+        </div>
+        <div class="credits">
+          素材参考：明日方舟「陈」角色立绘 / 雨夜都市场景 · 仅作学习交流用途
+        </div>
+      </div>
+      <div class="title-meta">
+        <span>FIELD UNIT: CH'EN</span>
+        <span>DISTRICT 9 / 23:41</span>
+        <span>VISUAL: 480 × 270</span>
+      </div>
+    </div>
+
+    <div id="pause" class="overlay pause hidden">
+      <div class="pause-panel">
+        <div class="kicker"><i></i> CONNECTION PAUSED</div>
+        <h2>暂停</h2>
+        <p>雨还在下。整理一下呼吸。</p>
+        <div class="pause-keys">
+          <span><kbd>A</kbd><kbd>D</kbd> 移动</span>
+          <span><kbd>SPACE</kbd> 跳跃 / 二段</span>
+          <span><kbd>SHIFT</kbd> 冲刺</span>
+          <span><kbd>J</kbd> 挥刀</span>
+        </div>
+        <button id="resumeBtn" class="btn"><span>继续行动</span><em>ESC</em></button>
+        <div class="load-note">按 ESC 或 ENTER 返回</div>
+      </div>
+    </div>
+
+    <div id="ending" class="overlay ending hidden">
+      <div class="ending-bg"></div>
+      <div class="ending-inner">
+        <div class="kicker"><i></i> OPERATION COMPLETE</div>
+        <h2>撤离完成</h2>
+        <p>B-7 的雨没有停。<br>三枚数据核心已经回收，龙门会记得今晚。</p>
+        <div class="stats">
+          <div><span>用时</span><b id="statTime">00:00</b></div>
+          <div><span>数据核心</span><b id="statCores">3 / 3</b></div>
+          <div><span>信号中断</span><b id="statDeaths">0</b></div>
+        </div>
+        <button id="restartBtn" class="btn"><span>再次潜入</span><em>R</em></button>
+      </div>
+      <div class="title-meta">
+        <span>CH'EN / L.G.D.</span>
+        <span>NIGHTFALL END</span>
+      </div>
+    </div>
+
+    <div id="fade" class="fade"></div>
+    <div id="boot" class="boot"><div class="boot-mark">NF</div><div class="boot-line"><i></i></div><span>LINKING…</span></div>
+  </div>
+</div>
+
+<script src="js/audio.js"></script>
+<script src="js/level.js"></script>
+<script src="js/game.js"></script>
+</body>
+</html>
